@@ -1,6 +1,9 @@
 // Client Script
 // DocType: Payment Entry
 
+// Auto allocate the cost center based on user permission in the payment entry deduction table.
+
+
 // Handle child table events
 frappe.ui.form.on('Payment Entry Deduction', {
     account: function(frm, cdt, cdn) {

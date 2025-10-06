@@ -1,3 +1,9 @@
+
+
+// The cost center in stock account entries table will automatically be allocated based on the user selection.
+
+
+
 frappe.ui.form.on("Stock Entry", {
     custom_cost_center: function(frm) {
         if (frm.doc.custom_cost_center) {
@@ -22,9 +28,5 @@ frappe.ui.form.on('Stock Entry Detail', {
 		// your code here
 	}
 })
-
-
-
-// The cost center in stock account entries table will automatically be allocated based on the user selection.
 
 
