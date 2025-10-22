@@ -1,6 +1,6 @@
 
 
-// The cost center in stock account entries table will automatically be allocated based on the user selection.
+// The cost center in stock account entries table will automatically be allocated based on the user selection in the form.
 
 
 

@@ -1,3 +1,10 @@
+
+
+// The cost center in journal entries table will automatically be allocated based on the user selection in the form.
+
+
+
+
 frappe.ui.form.on("Journal Entry Account", {
     cost_center: function(frm, cdt, cdn) {
         // Optional safeguard: if user has only one permitted Cost Center
