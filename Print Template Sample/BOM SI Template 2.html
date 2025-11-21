@@ -1,0 +1,181 @@
+<style>
+    * {
+        font-size: 10px;
+        margin: 0px;
+        padding: 0px;
+        border: 0px;
+        box-sizing: border-box;
+    }
+</style>
+<header style="display:flex;justify-content:space-between;">
+    <div>
+        <div style="display:flex;">
+            <img src="/files/bom-logo.jpg" style="width:100px;" />
+            <p style="font-weight:bold; font-size:14px;">Online Shopping</p>
+        </div>
+        <div style="font-size:10px; padding-left:10px;">
+            <p>အိမ်အမှတ် (၁၈၁)/၃၃လမ်း - ၇၆x၇၇လမ်းကြား။</p>
+            <p>ချမ်းအေးသာစံမြို့နယ်၊မန္တလေးမြို့။</p>
+            <p>09-891200729, 09-784630180</p>
+            <p>09-755646012, 09-965450604</p>
+        </div>
+    </div>
+    
+    <div>
+        <table style="">
+            <tr style="">
+                <td style="font-weight:bold;height:5px;">အမည်</span>
+                <td style="font-weight:bold; height:5px;">:</span>
+                <td style="border-bottom: 1px solid black; height:5px;">
+                    {{ doc.customer_name }}
+                </td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;">နံပါတ်</td>
+                <td style="font-weight:bold;">:</td>
+                <td style="width:150px; border-bottom: 1px solid black; height:5px;">
+                    {{doc.name}}
+                </td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;">ဖုန်းနံပါတ်</td>
+                <td style="font-weight:bold;">:</td>
+                <td style="width:150px; border-bottom: 1px solid black; height:5px;">
+                    {% set customer = frappe.get_doc("Customer", doc.customer) %}
+                      {% if customer.custom_ph_number %}
+                        {{ customer.custom_ph_number }}
+                    {% else %}-{% endif %} 
+                </td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;">နေ့စွဲ</td>
+                <td style="font-weight:bold;">:</td>
+                <td style="width:150px; border-bottom: 1px solid black; height:5px;">
+                    {{ frappe.utils.formatdate(doc.posting_date, "dd-MMM-yyyy") }}
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+<div>
+    <div>
+        <table style="margin-top:10px;">
+            <tr>
+                <td style="font-weight:bold;">မှတ်ချက်</td>
+                <td style="font-weight:bold;">:</td>
+                <td style="width: 50%;"> 
+                    {% if doc.custom_remark %}
+                        {{ doc.custom_remark }}
+                    {% else %}-{% endif %}
+                </td>
+                <td style="font-weight:bold;">လိပ်စာ</td>
+                <td style="font-weight:bold;">:</td>
+                <td style="width: 50%;">
+                    {% set customer = frappe.get_doc("Customer", doc.customer) %}
+                      {% if customer.custom_address %}
+                        {{ customer.custom_address }}
+                    {% else %}-{% endif %} 
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="margin-top:-5px;">
+        <table class="items" style="width:100%;">
+            <thead style="background: #bfb6fa; border: 1px solid black;">
+                <th style="text-align:center; color: black; border: 1px solid black; font-weight: bold;">စဥ်</th>
+                <th style="text-align:center; color: black; border: 1px solid black; width: 450px; font-weight: bold;">အမျိုးအမည်</th>
+                <th style="text-align:center; color: black; border: 1px solid black; font-weight: bold;">အရေအတွက်</th>
+                <th style="text-align:center; color: black; border: 1px solid black; width: 150px; font-weight: bold;">နှုန်း</th>
+                <th style="text-align:center; color: black; border: 1px solid black; width: 150px; font-weight: bold;">သင့်ငွေ</th>
+            </thead>
+            <tbody>
+                {% for row in doc.items %}
+            <tr>
+                <td class="num" style="border:1px solid black;">{{ loop.index }}</td>
+                <td style="border: 1px solid black;">
+                  {{ row.item_name }}
+                  {% if row.description and row.description.strip() and row.description.strip() != row.item_name %}
+                    <div class="muted" style="font-size:10px;">{{ row.description }}</div>
+                  {% endif %}
+                </td>
+                <td class="qty" style="text-align:end; border:1px solid black;">{{ frappe.format(row.qty, {"fieldtype":"Float", "precision": row.precision("qty")}) }}</td>
+                <td class="rate" style="text-align:end; border:1px solid black;">
+                  {{ frappe.utils.fmt_money(row.rate, precision=0) }}
+                </td>
+                <td class="amt" style="text-align:end; border:1px solid black;">
+                  {{ frappe.utils.fmt_money(row.amount, precision=0) }}
+                </td>
+            </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3"></td>
+                    <td style="border:1px solid black; font-weight: bold;">စုစုပေါင်း</td>
+                    <td style="border:1px solid black; text-align: end;">{{ frappe.utils.fmt_money(doc.total or doc.net_total, precision=0) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3"></td>
+                    <td style="border:1px solid black; font-weight: bold;">စရံငွေ</td>
+                    <td style="border:1px solid black;text-align:end;">{{ frappe.utils.fmt_money(doc.paid_amount, precision=0) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3"></td>
+                    <td style="border:1px solid black; font-weight: bold;">စုစုပေါင်းတန်ဖိုး</td>
+                    <td style="border:1px solid black;text-align:end;">{{ frappe.utils.fmt_money(doc.grand_total, precision=0) }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    
+    <div style="position:absolute;width:100%;bottom:0px;font-weight:bold;">
+        <p style="font-size:12px; font-weight:bold;">Lin Kalayar Oo</p>
+        <div style="display:flex; justify-content:space-between;">
+            <div>
+                <div style="display:flex; align-items:center; border:1px solid black;">
+                    <img src="/files/kbz bank logo.png" style="width:20px; margin-right:4px;" />
+                    <p style="border-left:1px solid black;padding-left:2px;">35930109300084101</p>
+                </div>
+                <div style="display:flex; align-items:center;border:1px solid black;">
+                    <img src="/files/kbz bank logo.png" style="width:20px;margin-right:4px;" />
+                    <div style="border-left:1px solid black;padding-left:2px;">
+                        <p>02651109300084101</p>
+                        <p>(Special Account)</p>
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center;border:1px solid black;">
+                    <img src="/files/aya-bank-logo.jpg" style="width:20px;margin-right:4px;" />
+                    <p style="border-left:1px solid black;padding-left:2px;">0206222010002793</p>
+                </div>
+                <div style="display:flex; align-items:center;border:1px solid black;">
+                    <img src="/files/cb_bank_logo.png" style="width:20px;margin-right:4px;" />
+                    <p style="border-left:1px solid black;padding-left:2px;">0031600800003832</p>
+                </div>
+                <div style="display:flex; align-items:center;border:1px solid black;">
+                    <img src="/files/MAB-logo-update-1.png" style="width:20px;margin-right:4px;" />
+                    <p style="border-left:1px solid black;padding-left:2px;">0170131017013673023</p>
+                </div>
+                <div style="display:flex; align-items:center;border:1px solid black;">
+                    <img src="/files/MAB-logo-update-1.png" style="width:20px;margin-right:4px;" />
+                    <div style="border-left:1px solid black;padding-left:2px;">
+                        <p>0170131017013673056</p>
+                        <p>(Special Account)</p>
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center;border:1px solid black;">
+                    <img src="/files/kbzpay-logo.jpg" style="width:20px;margin-right:4px;" />
+                    <p style="border-left:1px solid black;padding-left:2px;">09-793303988</p>
+                  
+                </div>
+            </div>
+            <div style="text-align:center;">
+                <p>*** ငွေလွှဲပြီးပါက Screen Shot ကို</p>
+                <p>Page Chat Box တွင် ပို့ပေးပါရန်။ ***</p>
+                <p>ဆက်သွယ်မေးမြန်းလိုပါက အောက်ပါဖုန်းနံပါတ်များကိုခေါ်ဆိုနိုင်ပါသည်။</p>
+                <p>(09-891200729, 09-784630180, 09-965450604, 09-755646012)</p>
+                <p>မိမိစိတ်တိုင်းကျ ဝယ်ယူပြီးပစ္စည်းများကို ပြန်မလဲပေးပါ။</p>
+                <p>ဝယ်ယူအားပေးမှုအတွက် ကျေးဇူးတင်ပါသည်။</p>
+            </div>
+        </div>
+    </div>
+</div>

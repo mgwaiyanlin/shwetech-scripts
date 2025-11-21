@@ -1,0 +1,23 @@
+<tbody>
+            {% for row in doc.items %}
+            <tr>
+                <td class="num">{{ loop.index }}</td>
+                <td>
+                  {{ row.item_name }}
+                  {% if row.description and row.description.strip() and row.description.strip() != row.item_name %}
+                    <div class="muted" style="font-size:10px;">{{ row.description }}</div>
+                  {% endif %}
+                </td>
+                <td class="qty" style="text-align:end;">{{ frappe.format(row.qty, {"fieldtype":"Float", "precision": row.precision("qty")}) }}</td>
+                <td class="rate" style="text-align:end;">
+                  {{ frappe.utils.fmt_money(row.rate, precision=0) }}
+                </td>
+                <td class="amt" style="text-align:end;">
+                  {{ frappe.utils.fmt_money(row.amount, precision=0) }}
+                </td>
+            </tr>
+              {% endfor %}
+              {% for i in range( (7 - (doc.items|length)) if (doc.items|length) < 7 else 0 ) %}
+              <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+              {% endfor %}
+        </tbody>

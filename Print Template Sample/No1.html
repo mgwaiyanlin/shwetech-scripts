@@ -1,0 +1,77 @@
+<header style="display:flex;text-align:center;">
+    <div>
+        <img src="/files/logo.jpg" style="width:150px;" />
+    </div>
+    <div style="padding-left:10px;font-weight:bold;">
+        <p style="color:red;">Number One တာယာရောင်းဝယ်ရေး</p>
+        <p>အမှတ်(366) စပ်စံထွန်းလမ်း၊ မြို့မရပ်၊ တောင်ကြီးမြို့</p>
+        <p>ဆိုင် - 081-2124715,09-41003009,09-5189788,09-260940685,09-768611611,09-884122266</p>
+        <p>နယ် - 09-266670770, 09-759400169</p>
+    </div>
+</header>
+
+<div style="margin-top:30px; display:flex;justify-content:space-between;">
+    <div>
+        <p>Customer Name: </p>
+        <p>Phone Number: </p>
+    </div>
+    <div>
+        <p>Invoice ID: </p>
+        <p>Date: </p>
+        <p>Due Date: </p>
+    </div>
+</div>
+
+
+<div>
+    <table style="width:100%;font-size:12px; margin-top:10px;">
+        <thead style="background:#d1d1d1;border: 1px solid gray;"">
+            <th style="color:black;border: 1px solid gray;"">No.</th>
+            <th style="color:black;border: 1px solid gray;"">Description</th>
+            <th style="color:black;border: 1px solid gray;"">Qty</th>
+            <th style="color:black;border: 1px solid gray;"">Unit Price</th>
+            <!--<th style="color:black;">Discount</th>-->
+            <th style="color:black;border: 1px solid gray;"">Amount</th>
+        </thead>
+        <tbody>
+            {%- for row in doc.items -%}
+    		<tr>
+    			<td style="border: 1px solid gray;"">{{ row.idx }}</td>
+    			<td style="border: 1px solid gray;"">
+    				{{ row.item_name }}
+    			</td>
+    			
+    			<td style="text-align: right;border: 1px solid gray;"">{{ row.qty }}</td>
+    			<td style="text-align: right;border: 1px solid gray;"">
+    			    {{row.get_formatted("rate", doc) }}
+    			</td>
+    			<td style=" text-align: right;border: 1px solid gray;"">
+    			    {{
+    				row.get_formatted("amount", doc) }}
+    			</td>
+    		</tr>
+    		{%- endfor -%}
+    		
+    		<tr>
+    		    <td colspan="3"></td>
+    		    <td style="border: 1px solid gray;">Subtotal</td>
+    		    <td style="border: 1px solid gray;">{{doc.net_total}}</td>
+    		</tr>
+    		<tr>
+    		    <td colspan="3"></td>
+    		    <td style="border: 1px solid gray;">Discount</td>
+    		    <td style="border: 1px solid gray;">{{doc.discount_amount}}</td>
+    		</tr>
+    		<tr>
+    		    <td colspan="3"></td>
+    		    <td style="border: 1px solid gray;">Total</td>
+    		    <td style="border: 1px solid gray;">{{doc.grand_total}}</td>
+    		</tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
