@@ -1,0 +1,181 @@
+<style>
+     @font-face {
+        font-family: 'NotoMyanmar';
+        src: url('/files/NotoSansMyanmar-Regular.ttf');
+    }
+    @font-face {
+        font-family: 'NotoMyanmar';
+        src: url('/files/NotoSansMyanmar-Regular.ttf');
+    }
+     
+    * { 
+        font-family: 'NotoMyanmar', sans-serif; 
+        margin: 0px;
+        padding: 0px;
+        border: 0px;
+        box-sizing: border-box;
+    }
+    
+    .logo-flex {
+        display: flex;
+        align-items: center;
+    }
+    
+    .main-header {
+        display: grid;
+        grid-template-columns: 1.4fr 2fr;
+    }
+    
+    .address-head {
+        font-size: 11px;
+        line-height: 1.8;
+        padding-top: 5px;
+    }
+    
+    .invoice-info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        font-size: 10px;
+    }
+    
+    table.items { width: 100%; border-collapse: collapse; }
+     
+    .items thead th {
+        background: #000; color: #fff; font-weight: 700; border: 0px solid #000; font-size: 10px; border-right: 2px solid black;
+        border-left: 2px solid black;
+        border-top: 2px solid black;
+    }
+    .items tbody td, .items tfoot td {
+        font-size:10px;
+    }
+    
+    .items tbody tr td {
+        background:#fafafa;
+        border-left: 2px solid black;
+        border-right: 2px solid black;
+        border-bottom: 1px solid white;
+    }
+</style>
+<div style="padding-top:10px;">
+    <head>
+        <div class="main-header" style="">
+            <div style="">
+                <div class="logo-flex">
+                    <img src="/files/bom-logo.jpg" style="height:80px;">
+                </div>
+            </div>
+            
+            <div style="" class="address-head">
+                အမှတ်(၁၈၁)၊ ၃၃လမ်း၊ ၇၆x၇၇ လမ်းကြား၊ ရတနာပုံစျေးအနီး၊
+                <p>မန္တလေးမြို့။ <span style="font-weight: bolder;"> 
+                    09 891200729,
+                    09 781219851,
+                </span></p>
+                <p style="font-weight: bolder;">
+                    09 965450604,
+                    09 784630180,
+                    09 777593442
+                </p>
+            </div>
+        </div>
+    </head>
+    <p style="border-style: dotted; border-width: 0 0 2px 0; border-color: black;"></p>
+    
+    <div class="invoice-info">
+        <div>
+            <p> <span style="font-weight: bolder;">အမည် - </span>{{doc.customer_name }}</p>
+            <p> <span style="font-weight: bolder;">ဖုန်းနံပါတ်</span>  {% set customer = frappe.get_doc("Customer", doc.customer) %}
+                  {% if customer.custom_ph_number %}
+                    {{ customer.custom_ph_number }}
+                {% else %}-{% endif %} 
+            </p>
+                
+            <p> <span style="font-weight: bolder">လိပ်စာ</span>
+                {% if customer.custom_township %}
+                    {{ customer.custom_township }}
+                {% else %}-{% endif %}
+            </p>
+            
+            <p> <span style="font-weight: bolder;">Sale Person - </span>
+                {{ doc.custom_sales_person }}
+            </p>
+            
+        </div>
+        
+        <div style="">
+            <p style="text-align: end;"><span style="font-weight: bolder;">Invoice No: </span>{{ doc.name }}</p>
+            <p style="text-align: end;"><span style="font-weight: bolder;">Date: </span>{{ frappe.utils.formatdate(doc.posting_date or doc.get('posting_date') or doc.get('invoice_date')) }}</p>
+            <p style="text-align:end;">
+                <span style="font-weight: bolder;">မှတ်ချက်</span>
+                {% if doc.custom_remark %}
+                        {{ doc.custom_remark }}
+                    {% else %}<a style="padding-right:100px;">-</a>{% endif %}
+            </p>
+            
+        </div>
+    </div>
+    
+    <div style="margin-top: 2px;">
+        <table class="items">
+            <thead>
+                <th style="text-align:center;">စဥ်</th>
+                <th style="text-align:center;">အမျိုးအမည်</th>
+                <th style="text-align:center;">အရေအတွက်</th>
+                <th style="text-align:center;">နှုန်း</th>
+                <th style="text-align:center;">သင့်ငွေ</th>
+            </thead>
+            <tbody>
+                {% for row in doc.items %}
+            <tr>
+                <td class="num">{{ loop.index }}</td>
+                <td>
+                  {{ row.item_name }}
+                  {% if row.description and row.description.strip() and row.description.strip() != row.item_name %}
+                    <div class="muted" style="font-size:10px;">{{ row.description }}</div>
+                  {% endif %}
+                </td>
+                <td class="qty" style="text-align:end;">{{ frappe.format(row.qty, {"fieldtype":"Float", "precision": row.precision("qty")}) }}</td>
+                <td class="rate" style="text-align:end;">
+                  {{ frappe.utils.fmt_money(row.rate, precision=0) }}
+                </td>
+                <td class="amt" style="text-align:end;">
+                  {{ frappe.utils.fmt_money(row.amount, precision=0) }}
+                </td>
+            </tr>
+              {% endfor %}
+              {% for i in range( (7 - (doc.items|length)) if (doc.items|length) < 7 else 0 ) %}
+              <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3">
+                        မိမိစိတ်တိုင်းကျ ဝယ်ယူပြီးပစ္စည်းများကို ပြန်မလဲပေးပါ။
+                        <p>ဝယ်ယူအားပေးအမှုအတွက် ကျေးဇူးတင်ပါသည်။</p>
+                    </td>
+                    <td style="background:#fafafa; border:2px solid #fff;">စုစုပေါင်း</td>
+                    <td style="background:#fafafa; border:2px solid #fff; text-align: end;">{{ frappe.utils.fmt_money(doc.total or doc.net_total, precision=0) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3"></td>
+                    <td style="background:#fafafa; border:2px solid #fff;">စရံ</td>
+                    <td style="background:#fafafa; border:2px solid #fff; text-align:end;">{{ frappe.utils.fmt_money(doc.paid_amount, precision=0) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3"></td>
+                    <td style="background:#fafafa; border:2px solid #fff;">ယခင်ကျန်ငွေ</td>
+                    <td style="background:#fafafa; border:2px solid #fff; text-align:end;">{{ frappe.utils.fmt_money(doc.custom_the_previous_outstanding, precision=0) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3"></td>
+                    <td style="background:#fafafa; border:2px solid #fff;">ကျန်ငွေ</td>
+                    <td style="background:#fafafa; border:2px solid #fff; text-align:end;">{{ frappe.utils.fmt_money(
+                        (frappe.utils.flt(doc.outstanding_amount) or 0) + (frappe.utils.flt(doc.custom_the_previous_outstanding) or 0),
+                        precision=0) }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    
+    <p style="border-style: dotted; border-width: 0 0 2px 0; border-color: black;"></p>
+</div>

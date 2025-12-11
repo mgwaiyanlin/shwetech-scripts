@@ -1,0 +1,108 @@
+<style>
+    .watermark {
+        position: absolute;
+        opacity: 0.1;
+        top:0;
+        left:0;
+    }
+
+    header {
+        display: flex;
+        align-items: top;
+    }
+
+    .logo {
+        width:80px;
+    }
+
+    table {
+        width: 100%;
+        margin-top:15px;
+    }
+
+    th {
+        font-size: 11px;
+        font-weight: bolder;
+        color: black;
+    }
+
+    tbody tr td, tfoot tr td {
+        font-size: 10px;
+    }
+</style>
+
+<div>
+    
+    <img src="/files/viber_image_2025-10-21_16-18-46-789.jpg" class="watermark" />
+    
+    <header style="display: flex;">
+    
+        <div class="logo"><img src="https://panncherrywin.j.frappe.cloud/files/viber_image_2025-10-21_16-18-46-789.jpg"/></div>
+        
+        <div>
+            <div style="display: flex; align-items:center;"><p style="font-size: 20px; font-weight:bold; margin-right:10px;">ပန်းချယ်ရီဝင်း </p> <p>ကုမ္ပဏီလီမိတက်</p></div>
+            <p style="font-size:12px; font-weight:bold;">အအေးခန်းနှင့် သယ်ယူပို့ဆောင်ရေးဝန်ဆောင်မှုလုပ်ငန်း</p>
+            <p style="font-size:9px;">အမှတ်(၂/၅၂)၊ ဖန်ချက်ဝန်ဦးရွှေအိုးလမ်း၊ ဦးမှိုလမ်း၊ လှိုင်သာယာမြို့နယ်၊ ဇုံ(၂)၊ ရန်ကုန်တိုင်းဒေသကြီး။</p>
+            <p style="font-size:10px;">📞: 09-891005997, 09-765403742, 09-765403744</p>
+        </div>
+    </header>
+
+<div style="display: flex; justify-content:space-between; font-size:12px; margin-top:15px;">
+    <div style="display: flex; align-items: center;width:100%;padding-right:100px;"><p style="font-weight:bold; margin-right:10px;">အမည်  </p> <p style="border-bottom:1px dotted black;width:100%;">{{doc.customer_name}}</p></div>
+    <div style="display:flex;align-items: center;width:50%;"><p style="font-weight:bold; margin-right:10px;">နေ့စွဲ</p> <p style="border-bottom:1px dotted black;width:100%;">{{ frappe.utils.formatdate(doc.posting_date, "dd-MMM-yyyy") }}</p> </div>
+</div>
+
+<div>
+    <table>
+        <thead>
+            <tr style="color: black;">
+                <th style="color: black;border:1px solid black;">အိတ်ရေ</th>
+                <th style="color: black;border:1px solid black;">အမျိုးအမည်</th>
+                <th style="color: black;border:1px solid black;">ပိဿာပေါင်း</th>
+                <th style="color: black;border:1px solid black;">နှုန်း</th>
+                <th style="color: black;border:1px solid black;">သင့်ငွေ</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in doc.items %}
+            <tr>
+                <td class="num" style="border:1px solid black;">{{ loop.index }}</td>
+                <td style="border:1px solid black;">
+                  {{ row.item_name }}
+                </td>
+                <td class="qty" style="text-align:end;border:1px solid black;">{{ frappe.format(row.qty, {"fieldtype":"Float", "precision": row.precision("qty")}) }} {{row.uom}}</td>
+                <td class="rate" style="text-align:end;border:1px solid black;">
+                  {{ frappe.utils.fmt_money(row.rate, precision=0) }}
+                </td>
+                <td class="amt" style="text-align:end;border:1px solid black;">
+                  {{ frappe.utils.fmt_money(row.amount, precision=0) }}
+                </td>
+            </tr>
+              {% endfor %}
+              {% for i in range( (10 - (doc.items|length)) if (doc.items|length) < 10 else 0 ) %}
+              <tr>
+                  <td style="border:1px solid black;">&nbsp;</td><td style="border:1px solid black;"></td><td style="border:1px solid black;"></td><td style="border:1px solid black;"></td><td style="border:1px solid black;"></td>
+              </tr>
+              {% endfor %}
+        </tbody>
+        <tfoot>
+ 
+            <tr>
+                <td colspan="3" rowspan="2" style="border-bottom: none; border-left: none;">
+                    <p>အခန်းတွင်းအပူချိန် 5° C မှ 10° C အတွင်းရှိခြင်းကိုအအေးခန်းမှ </p>
+                    <p>ဝန်ဆောင်မှုပေးပါသည်။ ရန်သူမျိုးငါးပါးနှင့် မည်သည့်ပျက်စီးဆုံးရှုံးမှု</p>
+                    <p>ကိုမဆို လုပ်ငန်းလက်ခံသူ (အအေးခန်း)မှ တာဝန်ယူမည်မဟုတ်ပါ။</p>
+                </td>
+                <td style="border:1px solid black;">လုပ်သား+တင်ချခ</td>
+                <td style="border:1px solid black;"></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid black;">စုစုပေါင်း</td>
+                <td style="text-align:end;border:1px solid black;">{{ frappe.utils.fmt_money(doc.total or doc.net_total, precision=0) }}</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+</div>
+
